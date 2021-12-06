@@ -242,10 +242,156 @@ print(co2,oxy)
 int(co2[0],2)*int(oxy[0],2)
 
 
+import os 
+import numpy as np
+import matplotlib.pyplot as plt
+
+input = open('04.txt').read().split("\n\n") 
+
+        
+    
+
+draw=[int(x) for x in i[0].split(",")] 
+boards=[[[int(z) for z in y.split()] for y in x.split("\n")] for x in i[1:]] 
+
+boards = np.array(boards,dtype=object)
+
+bordz = np.zeros((100,5,5))
+
+
+for x in range(bordz.shape[0]):
+    for y in range(bordz.shape[1]): 
+        for z in range(bordz.shape[2]):
+            bordz[x,y,z] = int(boards[x][y][z])
+
+boards = np.copy(bordz)
+
+
+
+winners = np.zeros((1,3))
+winners = winners-1
+
+count=0
+for idx,num in enumerate(draw):
+    for x in range(0,boards.shape[0]): 
+        for y in range(boards.shape[1]): 
+            for z in range(boards.shape[2]):
+                if boards[x,y,z] == num:
+                    boards[x,y,z] = -1
+        for y in range(boards.shape[1]): 
+            if boards[x,y,:].sum()==-5:
+                if not np.any(winners[:,0]==x):
+                    winners = np.append(winners,np.array([x,num,idx],ndmin=2),axis=0)
+        for z in range(boards.shape[2]): 
+            if boards[x,:,z].sum()==-5:
+                if not np.any(winners[:,0]==x):
+                    winners = np.append(winners,np.array([x,num,idx],ndmin=2),axis=0)
+
+
+
+                    
+winners=winners[1:]   
+
+print(len(winners))
 
 
 
 
+board = np.copy(bordz[int(winners[0][0]),:,:])
+for num in draw[:int(winners[0][2])+1]:
+    for y in range(boards.shape[1]): 
+            for z in range(boards.shape[2]):
+                if board[y,z] == num:
+                    board[y,z] = 0
+                    
+part_1 = board.sum()*winners[0][1]
+print(part_1)
+
+
+board = np.copy(bordz[int(winners[-1][0]),:,:])
+for num in draw[:int(winners[-1][2]+1)]:
+    for y in range(boards.shape[1]): 
+            for z in range(boards.shape[2]):
+                if board[y,z] == num:
+                    board[y,z] = 0
+print(board)                    
+board.sum()*winners[-1][1]
+
+
+import os 
+import numpy as np
+import matplotlib.pyplot as plt
+
+input = open('05.txt').read().split("\n")
+input = [i.split(" -> ")for i in input]
+
+for i,val in enumerate(input):
+    for n in range(len(val)):
+        input[i][n] = input[i][n].split(',')
+
+        
+def getStraight(input):
+    print(1)
+
+
+dat = np.zeros((1,4))#)np.array([])
+for i,v in enumerate(input[:-1]):
+    line = np.array([int(input[i][0][0]),int(input[i][0][1]),int(input[i][1][0]),int(input[i][1][1])],ndmin=2)
+    dat = np.append(dat , line , axis=0)
+dat = dat[1:]
+
+
+straights = np.zeros((1,4))
+
+for i,v in enumerate(dat):
+    if v[0]==v[2] or v[1]==v[3]:
+        straights = np.append(straights,v)        
+straights=straights.reshape((-1,4))[1:]
+print(np.shape(straights))
+
+res = np.zeros((1000,1000), dtype=int)
+
+for i,v in enumerate(straights):
+    if v[0]==v[2]:
+        minimum = int(np.min(v[[1,3]]))
+        maximum = int(np.max(v[[1,3]]))
+        res[int(v[0]),minimum:maximum+1]+=1
+    if v[1]==v[3]:
+        minimum = int(np.min(v[[0,2]]))
+        maximum = int(np.max(v[[0,2]]))
+        res[minimum:maximum+1,int(v[1])]+=1
+
+np.shape(np.where(res>1))[1]
+        
+
+
+lines = np.zeros((1,4))
+
+for i,v in enumerate(dat):
+    lines = np.append(lines,v)        
+lines=lines.reshape((-1,4))[1:]
+
+res = np.zeros((1000,1000), dtype=int)
+
+for i,v in enumerate(lines):
+    if v[0]==v[2]:
+        minimum = int(np.min(v[[1,3]]))
+        maximum = int(np.max(v[[1,3]]))
+        res[int(v[0]),minimum:maximum+1]+=1
+    if v[1]==v[3]:
+        minimum = int(np.min(v[[0,2]]))
+        maximum = int(np.max(v[[0,2]]))
+        res[minimum:maximum+1,int(v[1])]+=1
+    if np.abs(v[0]-v[2])==np.abs(v[1]-v[3]):
+        diffx = v[2]-v[0]
+        diffy = v[3]-v[1]
+        
+        for n in range(int(np.abs(diffx)+1)):
+            res[int(v[0]+int(n*np.sign(diffx))),int(v[1]+int(n*np.sign(diffy)))]+=1
+        
+        
+np.shape(np.where(res>1))[1]
+        
 
 
 import os 
