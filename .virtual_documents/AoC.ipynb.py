@@ -447,10 +447,47 @@ print('Part 1', count_fish(dat, 80))
 print('Part 2', count_fish(dat, 256))
 
 
+import os 
+import numpy as np
+import matplotlib.pyplot as plt
+
+data = [int(i) for i in open("07.txt").read().split(",")]
+
+t = np.median(data)
+f = sum([abs(x-t) for x in data])
+print(f"Target pos {t}, Fuel: {f}")
 
 
+cost = {i:sum([abs(x-i) * (abs(x-i)+1) / 2 for x in data]) for i in range(0, max(np.unique(data)))}
+#print(cost)
+result = min(cost, key=cost.get)
+print(f"Target pos {result}, Fuel: {cost[result]}")
 
 
+from itertools import permutations
+
+with open("08.txt") as f:
+    data = f.readlines()
+
+d = {"abcefg": 0,"cf": 1,"acdeg": 2,"acdfg": 3,"bcdf": 4,"abdfg": 5,"abdefg": 6,"acf": 7,"abcdefg": 8,"abcdfg": 9,}
+
+part_1 = 0
+part_2 = 0
+for line in data:
+    a, b = line.split(" | ")
+    a = a.split()
+    b = b.split()
+    part_1 += sum(len(code) in {2, 3, 4, 7} for code in b)
+    for permutation in permutations("abcdefg"):
+        to = str.maketrans("abcdefg", "".join(permutation))
+        aa = ["".join(sorted(code.translate(to))) for code in a]
+        bb = ["".join(sorted(code.translate(to))) for code in b]
+        if all(code in d for code in aa):
+            part_2 += int("".join(str(d[code]) for code in bb))
+            break
+
+print('Part 1: ',part_1)
+print('Part 2: ',part_2)
 
 
 
