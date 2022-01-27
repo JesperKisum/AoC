@@ -25,8 +25,8 @@ for line in data:
     part_1 += sum(len(code) in {2, 3, 4, 7} for code in b)
     for permutation in permutations("abcdefg"):
         to = str.maketrans("abcdefg", "".join(permutation))
-        a_ = ["".join(sorted(code.translate(to))) for code in a]
-        b_ = ["".join(sorted(code.translate(to))) for code in b]
+        a_ = ("".join(sorted(code.translate(to))) for code in a)
+        b_ = ("".join(sorted(code.translate(to))) for code in b)
         if all(code in d for code in a_):
             part_2 += int("".join(str(d[code]) for code in b_))
             break
