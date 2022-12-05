@@ -4,13 +4,12 @@ rpsLC = {val: key for (key, val) in rpsWC.items()}  # Lose condition
 
 
 def roundOutcome(game):
-    wdlValue = [6, 3, 0]
     if rpsWC[game[0]] == game[1]:
-        return wdlValue[2]
+        return 0
     elif rpsWC[game[1]] == game[0]:
-        return wdlValue[0]
+        return 6
     else:
-        return wdlValue[1]
+        return 3
 
 
 def part_1(game):
@@ -26,13 +25,10 @@ def part_2(game):
         chosen_outcome = rpsLC[game[0]]
     else:
         chosen_outcome = game[0]
-
     return rpsValue[chosen_outcome] + roundOutcome([game[0], chosen_outcome])
 
 
 with open("02.txt") as file:
     List = [i.split(" ") for i in file.read().split("\n")[:-1]]
-    part1 = sum(map(part_1, List))
-    print(part1)
-    part2 = sum(map(part_2, List))
-    print(part2)
+print(sum(map(part_1, List)))
+print(sum(map(part_2, List)))
