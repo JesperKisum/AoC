@@ -1,15 +1,5 @@
-from time import perf_counter
 import math
 
-
-def profiler(method):
-    def wrapper_method(*arg, **kw):
-        t = perf_counter()
-        ret = method(*arg, **kw)
-        print('Method ' + method.__name__ + ' took : ' +
-              "{:2.5f}".format(perf_counter()-t) + ' sec')
-        return ret
-    return wrapper_method
 
 
 class Monkey:
@@ -55,7 +45,7 @@ class Monkey:
         return ret
 
 
-@profiler
+
 def part1():
     monkeys = []
 
@@ -72,7 +62,7 @@ def part1():
     print(monkeys[0].activity * monkeys[1].activity)
 
 
-@profiler
+
 def part2():
     monkeys = []
 
