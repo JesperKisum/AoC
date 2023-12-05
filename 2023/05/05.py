@@ -25,25 +25,25 @@ examples = [
     }
     for ex in examples
 ]
-[print(ex) for ex in examples[0]["input_data"]]
-data = examples[0]["input_data"]
+# [print(ex) for ex in examples[0]["input_data"]]
+# data = examples[0]["input_data"]
 
 seeds = data[0].split(":")[1].split(" ")[1:]
 data.pop(0)
 data.pop(0)
-#print(data)
+# print(data)
 maps = []
-idx = np.where(np.array(data)=="",1,0)
-#print(idx)
-map_num=0
+idx = np.where(np.array(data) == "", 1, 0)
+# print(idx)
+map_num = 0
 
 map = []
 for n, line in enumerate(data):
-    if idx[n]==0:
+    if idx[n] == 0:
         map.append(line)
-    if idx[n]==1:
+    if idx[n] == 1:
         maps.append(map)
-        map=[]
+        map = []
 maps.append(map)
 
 
@@ -54,30 +54,76 @@ for m, map in enumerate(maps):
         else:
             maps[m][n] = [int(l) for l in line.split(" ")]
 
-[print(m) for m in maps]
+# [print(m) for m in maps]
 
 location_for_seeds = []
 
 seeds = [int(seed) for seed in seeds]
-print()
-print("seeds", seeds)
+# print()
+# print("seeds", seeds)
+# print()
 for seed in seeds:
+    # print()
+    # print(seed)
     for map in maps:
         found = False
         idx = 1
         while not found:
-            if seed in list(range(map[idx][0], map[idx][0]+map[idx][2])):
-               found = True
-               corresponding_idx = list(range(map[idx][0], map[idx][0]+map[idx][2])).index(seed)
-               print("seed", seed,"corresponding location",list(range(map[idx][1], map[idx][1]+map[idx][2]))[corresponding_idx])
-               seed = list(range(map[idx][1], map[idx][1]+map[idx][2]))[corresponding_idx]
-            elif idx == len(map)-1:
-                print("seed", seed,"corresponding location", seed)
+            if seed >= map[idx][1] and seed < sum(map[idx][1:]):
+                found = True
+                seed = map[idx][0] + seed - map[idx][1]
+            elif idx == len(map) - 1:
                 found = True
                 seed = seed
             else:
                 idx += 1
+    # print("seed", seed)
     location_for_seeds.append(seed)
 
 print("location_for_seeds", location_for_seeds)
-            
+print("lowest location", min(location_for_seeds))
+
+# part2
+
+
+maps = [[(n[0], n[1], n[2]) for n in map if len(n) == 3] for map in maps]
+
+
+def solve(range_tuple, maps):
+    if not maps:
+        return range_tuple[0]
+    for map in maps[0]:
+        destination = map[0]
+        start = map[1]
+        rang = map[2]
+        # range withing mapping
+        if (
+            start <= range_tuple[0] < start + rang
+            and start <= range_tuple[1] < start + rang
+        ):
+            seed = (
+                destination + range_tuple[0] - start,
+                destination + range_tuple[1] - start,
+            )
+            return solve(seed, maps[1:])
+        # range starts inside mapping and ends outside
+        elif start <= range_tuple[0] < start + rang and start + rang < range_tuple[1]:
+            seed = (destination + range_tuple[0] - start, destination + rang)
+            rest = (start + rang, range_tuple[1])
+            return min(solve(seed, maps[1:]), solve(rest, maps))
+        # range starts outside mapping and ends inside
+        elif range_tuple[0] < start and start <= range_tuple[1] < start + rang:
+            rest = (range_tuple[0], start - 1)
+            seed = (destination, destination + range_tuple[1] - start)
+            return min(solve(rest, maps), solve(seed, maps[1:]))
+        # range starts and ends outside mapping[
+        elif range_tuple[0] < start and range_tuple[1] > start + rang:
+            rest1 = (range_tuple[0], start - 1)
+            seed = (destination, destination + rang)
+            rest2 = (start + rang, range_tuple[1])
+            return min(solve(rest1, maps), solve(seed, maps[1:]), solve(rest2, maps))
+    return solve(range_tuple, maps[1:])
+
+
+seed_tuples = [(i, seeds[idx + 1] + i) for idx, i in enumerate(seeds) if idx % 2 == 0]
+print("lowest location", min((solve(i, maps) for i in seed_tuples)))
