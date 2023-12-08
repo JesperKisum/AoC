@@ -21,8 +21,6 @@ for idx, ex in enumerate(examples):
 examples = [
     {
         "input_data": ex.input_data.splitlines(),
-        "part_1": ex.answer_a,
-        "part_2": ex.answer_b,
     }
     for ex in examples
 ]
