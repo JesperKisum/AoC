@@ -31,19 +31,43 @@ mappings = {
     for line in data[2:]
 }
 steps = [i for i in data[0]]
-# print(steps)
+#print(steps)
 START = "AAA"
 CURRENT = "AAA"
-steps_run = 0
-while CURRENT != "ZZZ":
-    for step in steps:
-        steps_run += 1
+def solve(CURRENT, mappings, steps):
+    steps_run = 0
+    while CURRENT != "ZZZ":
+        for step in steps:
+            steps_run += 1
         if CURRENT == "ZZZ":
-            break
+               break
         CURRENT = mappings.get(CURRENT).get(step)
+    return steps_run
 
-print(steps_run)
+print(solve(CURRENT, mappings, steps))
 
 
-def stop_condition(currents: []):
-    return all([current[-1] for current in currents] == "Z")
+#def stop_condition(currents: []):
+#    return all([current.endswith("Z") for current in currents])
+#
+def get_start(mappings):
+    return [key for key in mappings.keys() if key.endswith("A")]
+
+
+def solve2(CURRENT, mappings, steps):
+    steps_run = 0
+    while not CURRENT.endswith("Z"):
+        for step in steps:
+            steps_run += 1
+        if CURRENT.endswith("Z"):
+               break
+        CURRENT = mappings.get(CURRENT).get(step)
+    return steps_run
+
+starts = get_start(mappings)
+
+results = [solve2(start, mappings, steps) for start in starts]
+print(results)
+
+from math import lcm
+print(lcm(*results))
