@@ -11,7 +11,10 @@ import numpy as np
 
 day = 8
 year = 2023
-data = get_data(day=day, year=year).splitlines()
+# data = get_data(day=day, year=year).splitlines()
+with open("input.txt", "r") as file:
+    data = file.read().splitlines()
+
 examples = aocd.models.Puzzle(year, day)._get_examples()
 # save examples onput to txt file
 for idx, ex in enumerate(examples):
@@ -31,25 +34,25 @@ mappings = {
     for line in data[2:]
 }
 steps = [i for i in data[0]]
-#print(steps)
+# print(steps)
 START = "AAA"
 CURRENT = "AAA"
+
+
 def solve(CURRENT, mappings, steps):
     steps_run = 0
     while CURRENT != "ZZZ":
         for step in steps:
             steps_run += 1
         if CURRENT == "ZZZ":
-               break
+            break
         CURRENT = mappings.get(CURRENT).get(step)
     return steps_run
+
 
 print(solve(CURRENT, mappings, steps))
 
 
-#def stop_condition(currents: []):
-#    return all([current.endswith("Z") for current in currents])
-#
 def get_start(mappings):
     return [key for key in mappings.keys() if key.endswith("A")]
 
@@ -60,14 +63,19 @@ def solve2(CURRENT, mappings, steps):
         for step in steps:
             steps_run += 1
         if CURRENT.endswith("Z"):
-               break
+            break
         CURRENT = mappings.get(CURRENT).get(step)
     return steps_run
+
 
 starts = get_start(mappings)
 
 results = [solve2(start, mappings, steps) for start in starts]
+
+print(starts)
 print(results)
 
+
 from math import lcm
+
 print(lcm(*results))

@@ -26,7 +26,7 @@ def sum_of_paths(paths):
         paths = list(paths)
     path_sum = 0
     for i in range(len(paths)):
-        for r in range(i + 1, len(v)):
+        for r in range(i + 1, len(paths)):
             path_sum += abs(paths[i][0] - paths[r][0]) + abs(paths[i][1] - paths[r][1])
     return path_sum
 
@@ -56,26 +56,24 @@ for i in x:
 
 # find all galaxies as a set of coordinates
 x = dp(y)
-v = set()
+galaxies = set()
 for i in range(len(x)):
     for r in range(len(x[0])):
         if x[i][r] == "#":
-            v.add((i, r))
+            galaxies.add((i, r))
 
 # find all shortest paths between galaxies
-v = list(v)
-print("9418609 = ", sum_of_paths(v))
+print("9418609 = ", sum_of_paths(galaxies))
 
 
 # part 2
 # clearing the matrix
-t = 0
 y = []
-
+# find all empty rows
 for i in range(len(data)):
     if "#" not in data[i]:
         y.append(i)
-
+# finding all empty columns
 yy = []
 for r in range(len(data[0])):
     for i in range(len(data)):
@@ -84,9 +82,8 @@ for r in range(len(data[0])):
     else:
         yy.append(r)
 
-
-v = set()
-
+# find all galaxies as a set of coordinates with the new distances
+galaxies = set()
 ii = 0
 rr = 0
 for i in range(len(data)):
@@ -99,6 +96,6 @@ for i in range(len(data)):
             rr += 1000000
             rr -= 1
         if data[i][r] == "#":
-            v.add((i + ii, r + rr))
+            galaxies.add((i + ii, r + rr))
 
-print("593821230983 = ", sum_of_paths(v))
+print("593821230983 = ", sum_of_paths(galaxies))
